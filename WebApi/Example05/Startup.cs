@@ -17,6 +17,8 @@ namespace WebApi.Example05
 {
     public class Startup
     {
+        private const int MaxHealthCheckRequests = 2;
+
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
 
@@ -47,6 +49,7 @@ namespace WebApi.Example05
 
             services.AddHealthChecksUI(setupSettings: settings =>
             {
+                settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
                 settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Liveness]", HealthCheckLiveEndpoint);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Readiness]", HealthCheckReadyEndpoint);

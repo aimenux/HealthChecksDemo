@@ -1,0 +1,31 @@
+{
+  "HealthChecksSettings": {
+    "SqlServerStorageConnectionString": "!PUT YOUR SQL SERVER STORAGE CONNECTION STRING HERE!",
+    "SqlServerHealthChecks": [
+      {
+        "Name": "SqlServer [1]",
+        "ConnectionString": "!PUT YOUR SQL SERVER CONNECTION 1 STRING HERE!"
+      },
+      {
+        "Name": "SqlServer [2]",
+        "ConnectionString": "!PUT YOUR SQL SERVER CONNECTION 2 STRING HERE!"
+      }
+    ]
+  },
+  "HealthChecksUI": {
+    "HealthChecks": [
+      {
+        "Name": "Example11 [Liveness]",
+        "Uri": "/healthchecks/live"
+      },
+      {
+        "Name": "Example11 [Readiness]",
+        "Uri": "/healthchecks/ready"
+      }
+    ],
+    "ApiMaxActiveRequests": 2,
+    "EvaluationTimeInSeconds": 10,
+    "MaximumExecutionHistoriesPerEndpoint": 20,
+    "MinimumSecondsBetweenFailureNotifications": 30
+  }
+}

@@ -13,15 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.HealthCheckers;
 
-namespace WebApi.Example04
+namespace WebApi.Example11
 {
     public class Startup
     {
-        private const int MaxHealthCheckRequests = 2;
-
-        private const string HealthCheckEndpoint = @"/healthchecks";
-        private static readonly string HealthCheckEndpointUrl = @$"https://localhost:44313{HealthCheckEndpoint}";
-
         private string ExampleName => GetType().Namespace?.Split('.').LastOrDefault();
 
         public Startup(IConfiguration configuration)
@@ -37,23 +32,16 @@ namespace WebApi.Example04
 
             services.AddSwaggerGen(c =>
             {
+                c.DocumentFilter<HealthChecksDocumentFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = ExampleName, Version = "v1" });
             });
 
             services.AddHealthChecks()
+                .AddSqlServers(GetSqlServerHealthChecksSettings(), new List<string> {"sqlServer"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("KO"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1));
+                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
 
-            services.AddHealthChecksUI(setupSettings: settings =>
-            {
-                settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
-                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
-                settings.AddHealthCheckEndpoint(ExampleName, HealthCheckEndpointUrl);
-                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromSeconds(30).Seconds);
-            }).AddInMemoryStorage();
+            services.AddHealthChecksUI().AddSqlServerStorage(GetSqlServerStorageConnectionString());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,14 +62,15 @@ namespace WebApi.Example04
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks(HealthCheckEndpoint, Options);
+                endpoints.MapHealthChecks(HealthChecksSettings.HealthCheckLiveEndpoint, LiveOptions);
+                endpoints.MapHealthChecks(HealthChecksSettings.HealthCheckReadyEndpoint, ReadyOptions);
                 endpoints.MapHealthChecksUI();
             });
         }
 
-        public HealthCheckOptions Options { get; } = new()
+        public HealthCheckOptions LiveOptions { get; } = new()
         {
-            Predicate = _ => true,
+            Predicate = setup => setup.Name.Equals(nameof(PingHealthChecker)),
             ResultStatusCodes =
             {
                 [HealthStatus.Healthy] = StatusCodes.Status200OK,
@@ -90,5 +79,37 @@ namespace WebApi.Example04
             },
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         };
+
+        public HealthCheckOptions ReadyOptions { get; } = new()
+        {
+            Predicate = setup => !setup.Name.Equals(nameof(PingHealthChecker)),
+            ResultStatusCodes =
+            {
+                [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                [HealthStatus.Degraded] = StatusCodes.Status500InternalServerError,
+                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+            },
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        };
+
+        private string GetSqlServerStorageConnectionString()
+        {
+            var sqlServerStorageConnectionString = Configuration
+                .GetSection(nameof(HealthChecksSettings))
+                .Get<HealthChecksSettings>()
+                .SqlServerStorageConnectionString;
+
+            return sqlServerStorageConnectionString;
+        }
+
+        private SqlServerHealthChecksSettings GetSqlServerHealthChecksSettings()
+        {
+            var sqlServerHealthChecksSettings = Configuration
+                .GetSection(nameof(HealthChecksSettings))
+                .Get<HealthChecksSettings>()
+                .SqlServerHealthChecks;
+
+            return sqlServerHealthChecksSettings;
+        }
     }
 }
