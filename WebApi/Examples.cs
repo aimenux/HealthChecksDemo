@@ -6,7 +6,7 @@ namespace WebApi
 {
     public class Examples
     {
-        private const Ids Current = Ids.Example5;
+        private const Ids Current = Ids.Example05;
 
         private static readonly Dictionary<Type, string> StartupTypes = new()
         {
@@ -31,15 +31,15 @@ namespace WebApi
 
         public enum Ids
         {
-            Example1 = 1,
-            Example2,
-            Example3,
-            Example4,
-            Example5,
-            Example6,
-            Example7,
-            Example8,
-            Example9,
+            Example01 = 1,
+            Example02,
+            Example03,
+            Example04,
+            Example05,
+            Example06,
+            Example07,
+            Example08,
+            Example09,
             Example10,
         }
     }
