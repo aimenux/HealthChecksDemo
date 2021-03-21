@@ -1,0 +1,18 @@
+{
+  "HealthChecksUI": {
+    "HealthChecks": [
+      {
+        "Name": "Example7 [Liveness]",
+        "Uri": "/healthchecks/live"
+      },
+      {
+        "Name": "Example7 [Readiness]",
+        "Uri": "/healthchecks/ready"
+      }
+    ],
+    "ApiMaxActiveRequests": 2,
+    "EvaluationTimeInSeconds": 10,
+    "MaximumExecutionHistoriesPerEndpoint": 20,
+    "MinimumSecondsBetweenFailureNotifications": 30
+  }
+}

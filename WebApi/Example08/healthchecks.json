@@ -1,0 +1,21 @@
+{
+  "Settings": {
+    "SqlLiteStorageConnectionString": "Data Source=healthchecks.db"
+  },
+  "HealthChecksUI": {
+    "HealthChecks": [
+      {
+        "Name": "Example8 [Liveness]",
+        "Uri": "/healthchecks/live"
+      },
+      {
+        "Name": "Example8 [Readiness]",
+        "Uri": "/healthchecks/ready"
+      }
+    ],
+    "ApiMaxActiveRequests": 2,
+    "EvaluationTimeInSeconds": 10,
+    "MaximumExecutionHistoriesPerEndpoint": 20,
+    "MinimumSecondsBetweenFailureNotifications": 30
+  }
+}
