@@ -1,4 +1,4 @@
-﻿namespace WebApi.Example11
+﻿namespace WebApi.Example12
 {
     public class HealthChecksSettings
     {

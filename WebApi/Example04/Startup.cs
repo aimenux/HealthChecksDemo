@@ -33,6 +33,8 @@ namespace WebApi.Example04
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(GetInstrumentationKey());
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -44,7 +46,7 @@ namespace WebApi.Example04
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("KO"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
+                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("UNK"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1));
 
             services.AddHealthChecksUI(setupSettings: settings =>
@@ -90,5 +92,12 @@ namespace WebApi.Example04
             },
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         };
+
+        private string GetInstrumentationKey()
+        {
+            const string key = @"Serilog:WriteTo:2:Args:instrumentationKey";
+            var instrumentationKey = Configuration.GetValue<string>(key);
+            return instrumentationKey;
+        }
     }
 }

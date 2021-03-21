@@ -22,6 +22,8 @@ namespace WebApi.Example01
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(GetInstrumentationKey());
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -54,6 +56,13 @@ namespace WebApi.Example01
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/");
             });
+        }
+
+        private string GetInstrumentationKey()
+        {
+            const string key = @"Serilog:WriteTo:2:Args:instrumentationKey";
+            var instrumentationKey = Configuration.GetValue<string>(key);
+            return instrumentationKey;
         }
     }
 }

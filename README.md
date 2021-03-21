@@ -85,11 +85,21 @@ Exploring healthchecks capabilities in web api net 5
 >
 > :writing_hand: `Example11`
 >
->> 2 custom checkers
->>
->> 2 sqlserver checkers
+>> 5 custom checkers
 >>
 >> 2 endpoints accessibles on `/healthchecks/live`, `/healthchecks/ready`
+>>
+>> Swagger support for healthchecks routes
+>>
+>> ui (json config, relative uris, sqlserver storage) served on `/healthchecks-ui`
+>
+> :writing_hand: `Example12`
+>
+>> 5 custom checkers
+>>
+>> 2 endpoints accessibles on `/healthchecks/live`, `/healthchecks/ready`
+>>
+>> 2 publishers to appinsights (metric/availability)
 >>
 >> Swagger support for healthchecks routes
 >>

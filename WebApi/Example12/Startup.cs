@@ -13,13 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.HealthCheckers;
 
-namespace WebApi.Example10
+namespace WebApi.Example12
 {
     public class Startup
     {
-        private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
-        private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
-
         private string ExampleName => GetType().Namespace?.Split('.').LastOrDefault();
 
         public Startup(IConfiguration configuration)
@@ -37,13 +34,25 @@ namespace WebApi.Example10
 
             services.AddSwaggerGen(c =>
             {
+                c.DocumentFilter<HealthChecksDocumentFilter>();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = ExampleName, Version = "v1" });
             });
 
             services.AddHealthChecks()
-                .AddSqlServers(GetSqlServerHealthChecksSettings(), new List<string> {"sqlServer"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
+                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
+                .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
+                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("UNK"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
+                .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1))
+                .AddApplicationInsightsAvailabilityPublisher()
+                .AddApplicationInsightsPublisher();
+
+            services.Configure<HealthCheckPublisherOptions>(options =>
+            {
+                options.Delay = TimeSpan.FromSeconds(5);
+                options.Period = TimeSpan.FromSeconds(30);
+                options.Timeout = TimeSpan.FromSeconds(30);
+            });
 
             services.AddHealthChecksUI().AddSqlServerStorage(GetSqlServerStorageConnectionString());
         }
@@ -66,8 +75,8 @@ namespace WebApi.Example10
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks(HealthCheckLiveEndpoint, LiveOptions);
-                endpoints.MapHealthChecks(HealthCheckReadyEndpoint, ReadyOptions);
+                endpoints.MapHealthChecks(HealthChecksSettings.HealthCheckLiveEndpoint, LiveOptions);
+                endpoints.MapHealthChecks(HealthChecksSettings.HealthCheckReadyEndpoint, ReadyOptions);
                 endpoints.MapHealthChecksUI();
             });
         }
@@ -104,16 +113,6 @@ namespace WebApi.Example10
                 .SqlServerStorageConnectionString;
 
             return sqlServerStorageConnectionString;
-        }
-
-        private SqlServerHealthChecksSettings GetSqlServerHealthChecksSettings()
-        {
-            var sqlServerHealthChecksSettings = Configuration
-                .GetSection(nameof(HealthChecksSettings))
-                .Get<HealthChecksSettings>()
-                .SqlServerHealthChecks;
-
-            return sqlServerHealthChecksSettings;
         }
 
         private string GetInstrumentationKey()

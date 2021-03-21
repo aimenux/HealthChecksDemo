@@ -1,15 +1,15 @@
 {
   "HealthChecksSettings": {
-    "SqlServerStorageConnectionString": "!PUT YOUR SQL SERVER STORAGE CONNECTION STRING HERE!"
+    "SqlServerStorageConnectionString": "Data Source=DESKTOP-DEV-95;Integrated Security=SSPI;Initial Catalog=HealthChecks;"
   },
   "HealthChecksUI": {
     "HealthChecks": [
       {
-        "Name": "Example11 [Liveness]",
+        "Name": "Example12 [Liveness]",
         "Uri": "/healthchecks/live"
       },
       {
-        "Name": "Example11 [Readiness]",
+        "Name": "Example12 [Readiness]",
         "Uri": "/healthchecks/ready"
       }
     ],
