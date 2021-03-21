@@ -83,6 +83,7 @@ Exploring healthchecks capabilities in web api net 5
 >>
 >> ui (json config, relative uris, sqlserver storage) served on `/healthchecks-ui`
 >
+>
 > ![Example05Screen](Screenshots/Example05.png)
 
 **`Tools`** : vs19, webapi, net 5.0, serilog
