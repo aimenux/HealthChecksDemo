@@ -31,7 +31,7 @@ Exploring healthchecks capabilities in web api net 5
 >>
 >> 1 endpoint accessible on `/healthchecks`
 >>
->> ui (fluent config) served on `/healthchecks-ui`
+>> ui (fluent config, inmemory storage) served on `/healthchecks-ui`
 >
 > :writing_hand: `Example05`
 >
@@ -39,7 +39,7 @@ Exploring healthchecks capabilities in web api net 5
 >>
 >> 2 endpoints accessibles on `/healthchecks/live`, `/healthchecks/ready`
 >>
->> ui (fluent config) served on `/healthchecks-ui`
+>> ui (fluent config, inmemory storage) served on `/healthchecks-ui`
 >
 > :writing_hand: `Example06`
 >
@@ -83,5 +83,6 @@ Exploring healthchecks capabilities in web api net 5
 >>
 >> ui (json config, relative uris, sqlserver storage) served on `/healthchecks-ui`
 >
+> ![Example05Screen](Screenshots/Example05.png)
 
 **`Tools`** : vs19, webapi, net 5.0, serilog
