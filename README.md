@@ -2,7 +2,7 @@
 
 # HealthChecksDemo
 ```
-Exploring healthchecks capabilities in web api net 5
+Exploring healthchecks capabilities with .net 5.0
 ```
 >
 > In this repo, i m providing multiple ways of adding healthchecks support to web api net 5
