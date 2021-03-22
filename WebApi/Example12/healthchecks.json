@@ -1,6 +1,6 @@
 {
   "HealthChecksSettings": {
-    "SqlServerStorageConnectionString": "Data Source=DESKTOP-DEV-95;Integrated Security=SSPI;Initial Catalog=HealthChecks;"
+    "SqlServerStorageConnectionString": "!PUT YOUR SQL SERVER STORAGE CONNECTION STRING HERE!"
   },
   "HealthChecksUI": {
     "HealthChecks": [
