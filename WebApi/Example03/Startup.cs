@@ -66,22 +66,22 @@ namespace WebApi.Example03
             });
         }
 
-        public HealthCheckOptions Options1 { get; } = new HealthCheckOptions
+        public HealthCheckOptions Options1 { get; } = new()
         {
             Predicate = setup => setup.Tags.Contains("cpu")
         };
 
-        public HealthCheckOptions Options2 { get; } = new HealthCheckOptions
+        public HealthCheckOptions Options2 { get; } = new()
         {
             Predicate = setup => setup.Tags.Contains("disk")
         };
 
-        public HealthCheckOptions Options3 { get; } = new HealthCheckOptions
+        public HealthCheckOptions Options3 { get; } = new()
         {
             Predicate = setup => setup.Tags.Contains("memory")
         };
 
-        public HealthCheckOptions Options4 { get; } = new HealthCheckOptions
+        public HealthCheckOptions Options4 { get; } = new()
         {
             Predicate = _ => true,
             ResultStatusCodes =

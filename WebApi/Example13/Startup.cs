@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.HealthCheckers;
 
-namespace WebApi.Example05
+namespace WebApi.Example13
 {
     public class Startup
     {
@@ -21,6 +21,9 @@ namespace WebApi.Example05
 
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
+
+        private static readonly RequestCatcherSettings RequestCatcherWebhook = new();
+        private static readonly MicrosoftTeamsSettings MicrosoftTeamsWebhook = new();
 
         private string ExampleName => GetType().Namespace?.Split('.').LastOrDefault();
 
@@ -44,18 +47,17 @@ namespace WebApi.Example05
 
             services.AddHealthChecks()
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("UNK"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1));
+                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
 
             services.AddHealthChecksUI(setupSettings: settings =>
             {
                 settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
-                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
-                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromSeconds(30).Seconds);
+                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(30).Seconds);
+                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromMinutes(1).Seconds);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Liveness]", HealthCheckLiveEndpoint);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Readiness]", HealthCheckReadyEndpoint);
+                settings.AddWebhookNotification(ExampleName, RequestCatcherWebhook.Url, RequestCatcherWebhook.FailurePayload, RequestCatcherWebhook.RestorePayload);
+                settings.AddWebhookNotification(ExampleName, MicrosoftTeamsWebhook.Url, MicrosoftTeamsWebhook.FailurePayload, MicrosoftTeamsWebhook.RestorePayload);
             }).AddInMemoryStorage();
         }
 

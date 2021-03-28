@@ -87,8 +87,11 @@ namespace WebApi.Example02
                 new JProperty("DependencyHealthChecks", new JObject(healthReport.Entries.Select(entry =>
                     new JProperty(entry.Key, new JObject(
                         new JProperty("Status", entry.Value.Status.ToString()),
-                        new JProperty("Duration", entry.Value.Duration.TotalSeconds.ToString("0:0.00"))
-                        ))
+                        new JProperty("Duration", entry.Value.Duration.TotalSeconds.ToString("0:0.00")),
+                        new JProperty("Exception", entry.Value.Exception?.Message),
+                        new JProperty("Data", new JObject(entry.Value.Data.Select(dicData =>
+                            new JProperty(dicData.Key, dicData.Value))))
+                    ))
                 )))
             );
 
