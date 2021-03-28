@@ -131,5 +131,8 @@ Exploring healthchecks capabilities with .net 5.0
 >
 > ![Example12Screen](Screenshots/Example12.png)
 >
+>
+> ![Example14Screen](Screenshots/Example14.png)
+>
 
 **`Tools`** : vs19, webapi, net 5.0, healthchecks, serilog
