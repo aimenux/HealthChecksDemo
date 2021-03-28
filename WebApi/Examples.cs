@@ -22,8 +22,9 @@ namespace WebApi
             {typeof(Example10.Startup), "Example10/healthchecks.json"},         // EXAMPLE 10 with ui (json configuration, two endpoints, relative uris, memory storage, sqlServer checks)
             {typeof(Example11.Startup), "Example11/healthchecks.json"},         // EXAMPLE 11 with swagger and ui (json configuration, two endpoints, relative uris, memory storage, sqlServer checks)
             {typeof(Example12.Startup), "Example12/healthchecks.json"},         // EXAMPLE 12 with swagger, publishers and ui (json configuration, two endpoints, relative uris, memory storage, sqlServer checks)
-            {typeof(Example13.Startup), null},                                  // EXAMPLE 13 with ui (fluent configuration, two endpoints, alerts microsoft-teams/request-catcher)
-            {typeof(Example14.Startup), "Example14/healthchecks.json"},         // EXAMPLE 14 with ui (json configuration, two endpoints, alerts microsoft-teams/request-catcher)
+            {typeof(Example13.Startup), null},                                  // EXAMPLE 13 with ui (fluent configuration, two endpoints, basic alerts microsoft-teams/request-catcher)
+            {typeof(Example14.Startup), null},                                  // EXAMPLE 14 with ui (fluent configuration, two endpoints, advanced alerts microsoft-teams/request-catcher)
+            {typeof(Example15.Startup), "Example15/healthchecks.json"},         // EXAMPLE 14 with ui (json configuration, two endpoints, basic alerts microsoft-teams/request-catcher)
         };
 
         public static (Type, string) GetStartupConfiguration()
@@ -48,7 +49,8 @@ namespace WebApi
             Example11,
             Example12,
             Example13,
-            Example14
+            Example14,
+            Example15
         }
     }
 }

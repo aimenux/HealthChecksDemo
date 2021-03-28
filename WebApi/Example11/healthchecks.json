@@ -16,6 +16,6 @@
     "ApiMaxActiveRequests": 3,
     "EvaluationTimeInSeconds": 10,
     "MaximumExecutionHistoriesPerEndpoint": 20,
-    "MinimumSecondsBetweenFailureNotifications": 30
+    "MinimumSecondsBetweenFailureNotifications": 60
   }
 }

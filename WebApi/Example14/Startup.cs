@@ -17,8 +17,14 @@ namespace WebApi.Example14
 {
     public class Startup
     {
+        private const int MaxHealthCheckRequests = 3;
+        private const int MaxHealthCheckEntries = 20;
+
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
+
+        private static readonly RequestCatcherSettings RequestCatcherWebhook = new();
+        private static readonly MicrosoftTeamsSettings MicrosoftTeamsWebhook = new();
 
         private string ExampleName => GetType().Namespace?.Split('.').LastOrDefault();
 
@@ -44,7 +50,16 @@ namespace WebApi.Example14
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
                 .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
 
-            services.AddHealthChecksUI().AddInMemoryStorage();
+            services.AddHealthChecksUI(setupSettings: settings =>
+            {
+                settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
+                settings.MaximumHistoryEntriesPerEndpoint(MaxHealthCheckEntries);
+                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
+                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromMinutes(1).Seconds);
+                settings.AddHealthCheckEndpoint($"{ExampleName} [Liveness]", HealthCheckLiveEndpoint);
+                settings.AddHealthCheckEndpoint($"{ExampleName} [Readiness]", HealthCheckReadyEndpoint);
+                settings.AddWebhookNotifications(RequestCatcherWebhook, MicrosoftTeamsWebhook);
+            }).AddInMemoryStorage();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

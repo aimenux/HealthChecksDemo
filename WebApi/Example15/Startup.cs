@@ -13,13 +13,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.HealthCheckers;
 
-namespace WebApi.Example05
+namespace WebApi.Example15
 {
     public class Startup
     {
-        private const int MaxHealthCheckRequests = 3;
-        private const int MaxHealthCheckEntries = 20;
-
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
 
@@ -45,20 +42,9 @@ namespace WebApi.Example05
 
             services.AddHealthChecks()
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("UNK"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1));
+                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
 
-            services.AddHealthChecksUI(setupSettings: settings =>
-            {
-                settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
-                settings.MaximumHistoryEntriesPerEndpoint(MaxHealthCheckEntries);
-                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
-                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromMinutes(1).Seconds);
-                settings.AddHealthCheckEndpoint($"{ExampleName} [Liveness]", HealthCheckLiveEndpoint);
-                settings.AddHealthCheckEndpoint($"{ExampleName} [Readiness]", HealthCheckReadyEndpoint);
-            }).AddInMemoryStorage();
+            services.AddHealthChecksUI().AddInMemoryStorage();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

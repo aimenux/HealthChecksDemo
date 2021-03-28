@@ -18,6 +18,7 @@ namespace WebApi.Example04
     public class Startup
     {
         private const int MaxHealthCheckRequests = 3;
+        private const int MaxHealthCheckEntries = 20;
 
         private const string HealthCheckEndpoint = @"/healthchecks";
         private static readonly string HealthCheckEndpointUrl = @$"https://localhost:44313{HealthCheckEndpoint}";
@@ -52,9 +53,10 @@ namespace WebApi.Example04
             services.AddHealthChecksUI(setupSettings: settings =>
             {
                 settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
+                settings.MaximumHistoryEntriesPerEndpoint(MaxHealthCheckEntries);
                 settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
+                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromMinutes(1).Seconds);
                 settings.AddHealthCheckEndpoint(ExampleName, HealthCheckEndpointUrl);
-                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromSeconds(30).Seconds);
             }).AddInMemoryStorage();
         }
 

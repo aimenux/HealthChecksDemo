@@ -18,6 +18,7 @@ namespace WebApi.Example13
     public class Startup
     {
         private const int MaxHealthCheckRequests = 3;
+        private const int MaxHealthCheckEntries = 20;
 
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
@@ -52,12 +53,12 @@ namespace WebApi.Example13
             services.AddHealthChecksUI(setupSettings: settings =>
             {
                 settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
-                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(30).Seconds);
+                settings.MaximumHistoryEntriesPerEndpoint(MaxHealthCheckEntries);
+                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
                 settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromMinutes(1).Seconds);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Liveness]", HealthCheckLiveEndpoint);
                 settings.AddHealthCheckEndpoint($"{ExampleName} [Readiness]", HealthCheckReadyEndpoint);
-                settings.AddWebhookNotification(ExampleName, RequestCatcherWebhook.Url, RequestCatcherWebhook.FailurePayload, RequestCatcherWebhook.RestorePayload);
-                settings.AddWebhookNotification(ExampleName, MicrosoftTeamsWebhook.Url, MicrosoftTeamsWebhook.FailurePayload, MicrosoftTeamsWebhook.RestorePayload);
+                settings.AddWebhookNotifications(RequestCatcherWebhook, MicrosoftTeamsWebhook);
             }).AddInMemoryStorage();
         }
 
