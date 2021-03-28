@@ -18,7 +18,7 @@
 
     public class MicrosoftTeamsSettings : IWebhookSettings
     {
-        public string Url { get; set; } = "!PUT-YOUR-TEAMS-WEBHOOK-URL-HERE!";
+        public string Url { get; set; } = "!PUT-YOUR-MICROSOFT-TEAMS-URL-HERE!";
 
         public string FailurePayload { get; set; } = "{\r\n \"@type\": \"MessageCard\",\r\n \"themeColor\": \"c60035\",\r\n \"title\": \"[[LIVENESS]] is failed.\",\r\n \"text\": \"[[FAILURE]]\",\r\n \"potentialAction\": [\r\n {\r\n \"@type\": \"OpenUri\",\r\n \"name\": \"Learn More\",\r\n \"targets\": [\r\n { \"os\": \"default\", \"uri\": \"https://localhost:44313/healthchecks-ui\" }\r\n ]\r\n }\r\n ]\r\n}";
 

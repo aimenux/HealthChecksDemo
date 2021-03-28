@@ -17,7 +17,7 @@ namespace WebApi.Example05
 {
     public class Startup
     {
-        private const int MaxHealthCheckRequests = 2;
+        private const int MaxHealthCheckRequests = 3;
 
         private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
         private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";

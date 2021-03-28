@@ -1,0 +1,32 @@
+{
+  "HealthChecksUI": {
+    "HealthChecks": [
+      {
+        "Name": "Example14 [Liveness]",
+        "Uri": "/healthchecks/live"
+      },
+      {
+        "Name": "Example14 [Readiness]",
+        "Uri": "/healthchecks/ready"
+      }
+    ],
+    "Webhooks": [
+      {
+        "Name": "RequestCatcher",
+        "Uri": "!PUT-YOUR-REQUEST-CATCHER-URL-HERE!",
+        "Payload": "{ message: \"[[LIVENESS]] service is failed. [[FAILURE]]\"}",
+        "RestoredPayload": "{ message: \"[[LIVENESS]] service is recovered. There is 0 healthcheck failing.\"}"
+      },
+      {
+        "Name": "MicrosoftTeams",
+        "Uri": "!PUT-YOUR-MICROSOFT-TEAMS-URL-HERE!",
+        "Payload": "{\r\n \"@type\": \"MessageCard\",\r\n \"themeColor\": \"c60035\",\r\n \"title\": \"[[LIVENESS]] is failed.\",\r\n \"text\": \"[[FAILURE]]\",\r\n \"potentialAction\": [\r\n {\r\n \"@type\": \"OpenUri\",\r\n \"name\": \"Learn More\",\r\n \"targets\": [\r\n { \"os\": \"default\", \"uri\": \"https://localhost:44313/healthchecks-ui\" }\r\n ]\r\n }\r\n ]\r\n}",
+        "RestoredPayload": "{\r\n \"@type\": \"MessageCard\",\r\n \"themeColor\": \"00c66a\",\r\n \"title\": \"[[LIVENESS]] is recovered.\",\r\n \"text\": \"There is 0 healthcheck failing.\",\r\n \"potentialAction\": [\r\n {\r\n \"@type\": \"OpenUri\",\r\n \"name\": \"Learn More\",\r\n \"targets\": [\r\n { \"os\": \"default\", \"uri\": \"https://localhost:44313/healthchecks-ui\" }\r\n ]\r\n }\r\n ]\r\n}"
+      }
+    ],
+    "ApiMaxActiveRequests": 3,
+    "EvaluationTimeInSeconds": 10,
+    "MaximumExecutionHistoriesPerEndpoint": 20,
+    "MinimumSecondsBetweenFailureNotifications": 30
+  }
+}

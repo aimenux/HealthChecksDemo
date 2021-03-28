@@ -6,7 +6,7 @@ namespace WebApi
 {
     public class Examples
     {
-        private const Ids Current = Ids.Example13;
+        private const Ids Current = Ids.Example14;
 
         private static readonly Dictionary<Type, string> StartupTypes = new()
         {
@@ -23,6 +23,7 @@ namespace WebApi
             {typeof(Example11.Startup), "Example11/healthchecks.json"},         // EXAMPLE 11 with swagger and ui (json configuration, two endpoints, relative uris, memory storage, sqlServer checks)
             {typeof(Example12.Startup), "Example12/healthchecks.json"},         // EXAMPLE 12 with swagger, publishers and ui (json configuration, two endpoints, relative uris, memory storage, sqlServer checks)
             {typeof(Example13.Startup), null},                                  // EXAMPLE 13 with ui (fluent configuration, two endpoints, alerts microsoft-teams/request-catcher)
+            {typeof(Example14.Startup), "Example14/healthchecks.json"},         // EXAMPLE 14 with ui (json configuration, two endpoints, alerts microsoft-teams/request-catcher)
         };
 
         public static (Type, string) GetStartupConfiguration()
@@ -47,6 +48,7 @@ namespace WebApi
             Example11,
             Example12,
             Example13,
+            Example14
         }
     }
 }

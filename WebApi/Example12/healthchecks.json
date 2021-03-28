@@ -13,7 +13,7 @@
         "Uri": "/healthchecks/ready"
       }
     ],
-    "ApiMaxActiveRequests": 2,
+    "ApiMaxActiveRequests": 3,
     "EvaluationTimeInSeconds": 10,
     "MaximumExecutionHistoriesPerEndpoint": 20,
     "MinimumSecondsBetweenFailureNotifications": 30

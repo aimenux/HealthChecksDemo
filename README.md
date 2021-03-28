@@ -105,6 +105,26 @@ Exploring healthchecks capabilities with .net 5.0
 >>
 >> ui (json config, relative uris, sqlserver storage) served on `/healthchecks-ui`
 >
+> :writing_hand: `Example13`
+>
+>> 2 custom checkers
+>>
+>> 2 endpoints accessibles on `/healthchecks/live`, `/healthchecks/ready`
+>>
+>> 2 webhooks (fluent config) for alerts on [microsoft-teams](https://www.microsoft.com/en-ww/microsoft-teams/download-app) and [request-catcher](https://requestcatcher.com/)
+>>
+>> ui (fluent config, inmemory storage) served on `/healthchecks-ui`
+>
+> :writing_hand: `Example14`
+>
+>> 2 custom checkers
+>>
+>> 2 endpoints accessibles on `/healthchecks/live`, `/healthchecks/ready`
+>>
+>> 2 webhooks (json config) for alerts on [microsoft-teams](https://www.microsoft.com/en-ww/microsoft-teams/download-app) and [request-catcher](https://requestcatcher.com/)
+>>
+>> ui (json config, inmemory storage) served on `/healthchecks-ui`
+>
 >
 > ![Example05Screen](Screenshots/Example05.png)
 >

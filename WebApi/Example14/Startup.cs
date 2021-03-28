@@ -13,14 +13,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.HealthCheckers;
 
-namespace WebApi.Example04
+namespace WebApi.Example14
 {
     public class Startup
     {
-        private const int MaxHealthCheckRequests = 3;
-
-        private const string HealthCheckEndpoint = @"/healthchecks";
-        private static readonly string HealthCheckEndpointUrl = @$"https://localhost:44313{HealthCheckEndpoint}";
+        private const string HealthCheckLiveEndpoint = @"/healthchecks/live";
+        private const string HealthCheckReadyEndpoint = @"/healthchecks/ready";
 
         private string ExampleName => GetType().Namespace?.Split('.').LastOrDefault();
 
@@ -44,18 +42,9 @@ namespace WebApi.Example04
 
             services.AddHealthChecks()
                 .AddCheck<PingHealthChecker>(nameof(PingHealthChecker), tags: new List<string> {"ping"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "CpuChecker", check: () => HealthCheckResult.Healthy("OK"), tags: new List<string> {"cpu"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "DiskChecker", check: () => HealthCheckResult.Degraded("UNK"), tags: new List<string> {"disk"}, timeout: TimeSpan.FromSeconds(1))
-                .AddCheck(name: "MemoryChecker", check: () => HealthCheckResult.Unhealthy("KO"), tags: new List<string> {"memory"}, timeout: TimeSpan.FromSeconds(1));
+                .AddCheck<RandomHealthChecker>(nameof(RandomHealthChecker), tags: new List<string> {"random"}, timeout: TimeSpan.FromSeconds(1));
 
-            services.AddHealthChecksUI(setupSettings: settings =>
-            {
-                settings.SetApiMaxActiveRequests(MaxHealthCheckRequests);
-                settings.SetEvaluationTimeInSeconds(TimeSpan.FromSeconds(10).Seconds);
-                settings.AddHealthCheckEndpoint(ExampleName, HealthCheckEndpointUrl);
-                settings.SetMinimumSecondsBetweenFailureNotifications(TimeSpan.FromSeconds(30).Seconds);
-            }).AddInMemoryStorage();
+            services.AddHealthChecksUI().AddInMemoryStorage();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -76,14 +65,27 @@ namespace WebApi.Example04
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks(HealthCheckEndpoint, Options);
+                endpoints.MapHealthChecks(HealthCheckLiveEndpoint, LiveOptions);
+                endpoints.MapHealthChecks(HealthCheckReadyEndpoint, ReadyOptions);
                 endpoints.MapHealthChecksUI();
             });
         }
 
-        public HealthCheckOptions Options { get; } = new()
+        public HealthCheckOptions LiveOptions { get; } = new()
         {
-            Predicate = _ => true,
+            Predicate = setup => setup.Tags.Contains("ping"),
+            ResultStatusCodes =
+            {
+                [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                [HealthStatus.Degraded] = StatusCodes.Status500InternalServerError,
+                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+            },
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        };
+
+        public HealthCheckOptions ReadyOptions { get; } = new()
+        {
+            Predicate = setup => !setup.Tags.Contains("ping"),
             ResultStatusCodes =
             {
                 [HealthStatus.Healthy] = StatusCodes.Status200OK,
