@@ -48,7 +48,6 @@ namespace WebApi.Example12
 
             return availabilityTelemetry;
         }
-
     }
 
     public static class HealthChecksBuilderExtensions
